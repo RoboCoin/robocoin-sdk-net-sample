@@ -1,0 +1,30 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmbeddedClient", "EmbeddedClient\EmbeddedClient.csproj", "{A5318FD1-79C9-4696-97E7-90D2CFD6E253}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|Mixed Platforms = Debug|Mixed Platforms
+		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|Mixed Platforms = Release|Mixed Platforms
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A5318FD1-79C9-4696-97E7-90D2CFD6E253}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A5318FD1-79C9-4696-97E7-90D2CFD6E253}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A5318FD1-79C9-4696-97E7-90D2CFD6E253}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{A5318FD1-79C9-4696-97E7-90D2CFD6E253}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{A5318FD1-79C9-4696-97E7-90D2CFD6E253}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{A5318FD1-79C9-4696-97E7-90D2CFD6E253}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A5318FD1-79C9-4696-97E7-90D2CFD6E253}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A5318FD1-79C9-4696-97E7-90D2CFD6E253}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{A5318FD1-79C9-4696-97E7-90D2CFD6E253}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{A5318FD1-79C9-4696-97E7-90D2CFD6E253}.Release|x86.ActiveCfg = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

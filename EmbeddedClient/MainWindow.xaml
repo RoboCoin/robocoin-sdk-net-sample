@@ -1,0 +1,45 @@
+﻿<Window
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:RobocoinEmbedded;assembly=RobocoinEmbeddedControl" x:Class="RobocoinEmbedded.MainWindow"
+        Title="MainWindow" Height="1024" Width="1280">
+    <Grid>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <local:BrowserControl 
+            Grid.Row="1" 
+            HorizontalAlignment="Stretch" 
+            VerticalAlignment="Stretch" 
+            Height="Auto"
+            Width="Auto"
+            MaxWidth="1280"
+            MaxHeight="1024"
+            x:Name="robocoinBrowser"/>
+
+        <Menu 
+			Grid.Row="0" 
+			Width="Auto">
+            <MenuItem Header="_Browser">
+                <MenuItem Header="_Go Home" Click="goButton_Click"/>
+                <MenuItem Header="_Refresh" Click="refreshButton_Click"/>
+            </MenuItem>
+            <MenuItem Header="_Events">
+                <MenuItem Header="_Insert Bill" Click="insertMoneyMenuItem_Click"/>
+            </MenuItem>
+            <MenuItem Header="_Config..." Click="configButton_Click"/>
+            <MenuItem Header="_Requests">
+                <MenuItem Header="Get _Kiosk Info" Click="getKioskInfo_Click"/>
+                <MenuItem Header="Post _Log" Click="postLog_Click"/>
+                <MenuItem Header="Get _Inventory" Click="getInventory_Click"/>
+                <MenuItem Header="Post I_nventory" Click="postInventory_Click"/>
+                <MenuItem Header="Get Authed _User" Click="getAuthedUser_Click"/>
+                <MenuItem Header="Get _Operator" Click="getOperator_Click"/>
+            </MenuItem>
+        </Menu>        
+
+    </Grid>
+</Window>
