@@ -1,7 +1,7 @@
 ﻿<Window x:Class="RobocoinEmbedded.Config"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Config" Height="300" Width="600"
+        Title="Config" Height="235" Width="600"
         Closing="Window_Closing">
     <Grid DataContext="StaticResource apiCredentials">
 
@@ -32,6 +32,7 @@
 
         <TextBlock Grid.Row="4" Grid.Column="0" Text="Machine ID:"/>
         <TextBox Grid.Row="4" Grid.Column="1" x:Name="MachineId"/>
-        
+        <Button Content="Save" Grid.Column="1" HorizontalAlignment="Left" Height="30" Margin="177,41,0,-40" Grid.Row="4" VerticalAlignment="Top" Width="75" RenderTransformOrigin="0.533,-0.8" Click="Button_Click"/>
+
     </Grid>
 </Window>

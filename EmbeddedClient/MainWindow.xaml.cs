@@ -14,8 +14,13 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.ComponentModel;
 using System.Net;
+using Robocoin.Events;
+using Robocoin.Models;
+using Robocoin.Types;
+using System.Collections.ObjectModel;
+using System.Windows.Threading;
+using System.Threading;
 
-using RobocoinEmbedded.Model;
 
 namespace RobocoinEmbedded
 {
@@ -24,158 +29,296 @@ namespace RobocoinEmbedded
     /// </summary>
     public partial class MainWindow : Window
     {
-        private Decimal _buyLimit;
-        private Decimal _totalInserted;
+        private Collection<KioskCashCassette> _kioskCashCassettes;
+        private int _buyLimit;
+        private int _totalInserted;
 
         public MainWindow()
         {
             InitializeComponent();
-            robocoinBrowser.OnSellSuccess += onSellSuccess;
-            robocoinBrowser.OnBuySuccess += onBuySuccess;
-            robocoinBrowser.OnGotBuyLimit += onGotBuyLimit;
-            robocoinBrowser.OnAppRunning += onAppRunning;
-            robocoinBrowser.OnPageChange += onPageChange;
-            robocoinBrowser.OnGotKioskInfo += onGotKioskInfo;
-            robocoinBrowser.OnGotAuthUser += onGotAuthUser;
-            robocoinBrowser.OnGotOperator += onGotOperator;
-            robocoinBrowser.OnGotInventory += onGotInventory;
-            robocoinBrowser.OnSecretButtonTapped += onSecretButtonTapped;
+            robocoin.OnAppRunning += onAppRunning;
+            robocoin.OnBuySuccess += onBuySuccess;
+            robocoin.OnGotAuthenticatedUser += onGotAuthUser;
+            robocoin.OnGotBuyLimit += onGotBuyLimit;
+            robocoin.OnGotInventory += onGotInventory;
+            robocoin.OnGotKioskInfo += onGotKioskInfo;
+            robocoin.OnGotOperator += onGotOperator;
+            robocoin.OnPageChange += onPageChange;
+            robocoin.OnSellSuccess += onSellSuccess;
+            robocoin.OnSendSuccess += onSendSuccess;
+            robocoin.OnSecretButtonTapped += onSecretButtonTapped;
         }
 
+        #region Events
+        /// <summary>
+        /// The SDK has fully loaded all the elements and the interface is ready for user interaction.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void onAppRunning(object sender, EventArgs e)
+        {
+            WriteToConsole("onAppRunning");
+        }
+
+        /// <summary>
+        /// The information of a completed purchase of bitcoin.
+        /// Software action: Update machine inventory by calling PostInventory()
+        /// Hardware action: Print a proof of purchase receipt that includes the transaction ID, the amount of fiat, and the amount of bitcoin.
+        /// Hardware action: Disable the bill validator.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void onBuySuccess(object sender, BuyEventArgs e)
+        {
+            _totalInserted = 0;
+            WriteToConsole("onBuySuccess: " + "Transaction: " + e.TransactionId + " Bitcoin: " + e.BitcoinAmount);
+            WriteToConsole("Hardware Action: Validator -> Disable");
+            WriteToConsole("Hardware Action: Printer -> Proof of Purchase receipt");
+        }
+
+        /// <summary>
+        /// The information of a successfully logged in user.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void onGotAuthUser(object sender, UserEventArgs e)
+        {
+            WriteToConsole("onGotAuthUser: " + e.Nickname);
+        }
+
+        /// <summary>
+        /// The total amount of cash the user is permitted to deposit for the given time period.
+        /// Hardware action: Enable the bill validator.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void onGotBuyLimit(object sender, BuyLimitEventArgs e)
+        {            
+            _buyLimit = e.BuyLimitAmount;
+            WriteToConsole("onGotBuyLimit: " + e.BuyLimitAmount);
+            WriteToConsole("Hardware Action: Validator -> Enable");
+        }
+
+        /// <summary>
+        /// The current inventory of the operator wallet and the cash inventory of this machine.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void onGotInventory(object sender, InventoryEventArgs e)
+        {
+            _kioskCashCassettes = e.KioskCashCassettes;
+            WriteToConsole("onGotInventory: buy -> " + e.BuyAvailableAmount + " sell -> " + e.SellAvailableAmount);
+        }
+
+        /// <summary>
+        /// The current information and settings of this machine.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void onGotKioskInfo(object sender, KioskInfoEventArgs e)
+        {
+            WriteToConsole("onGotKioskInfo: " + e.Kiosk.KioskId);
+        }
+
+        /// <summary>
+        /// The current information of the operator this machines trades under.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void onGotOperator(object sender, OperatorEventArgs e)
+        {
+            WriteToConsole("onGotOperator: " + e.Name);
+        }
+
+        /// <summary>
+        /// The current page the user has navigated to.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void onPageChange(object sender, ScreenEventArgs e)
+        {
+            WriteToConsole("onPageChange: " + e.Screen.ToString());
+
+            switch (e.Screen)
+            {                
+                case Screen.Buy:                    
+                    // The deposit money screen
+                    break;
+                case Screen.CreatePin:
+                    // The create PIN screen in enrollment
+                    break;
+                case Screen.EnterPin:
+                    // The PIN screen in sign-in
+                    break;
+                case Screen.EnterVerification:
+                    // The SMS verification screen in enrollment
+                    break;
+                case Screen.FacePicture:
+                    // The face picture taking screen in enrollment
+                    break;
+                case Screen.Index:
+                    // The main screen (either signed-out or signed-in)
+                    // Software action: Update machine inventory by calling PostInventory()
+                    break;
+                case Screen.Receive:
+                    // The QR code screen to load bitcoin into their wallet
+                    break;
+                case Screen.ScanBitcoinAddress:
+                    // The withdraw bitcoin screen that enables the webcam to scan for a bitcoin QR code
+                    break;
+                case Screen.ScanBitcoinAddressAmount:
+                    // The withdraw bitcoin amount screen
+                    break;
+                case Screen.ScanId:
+                    // The ID picture taking screen in enrollment
+                    break;
+                case Screen.Sell:
+                    // The withdraw money screen
+                    break;
+                case Screen.SignIn:
+                    // The phone number sign-in screen
+                    break;
+                case Screen.SignInVerify:
+                    // The 2-factor authentication screen in sign-in
+                    break;
+                case Screen.SignOut:
+                    // The user signs out
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// The information of a completed sale of bitcoin.
+        /// Software action: Update machine inventory by calling PostInventory()
+        /// Hardware action: Dispense the given amount of cash.
+        /// Hardware action: Print a proof of sale receipt that includes the transaction ID, the amount of fiat, and the amount of bitcoin.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void onSellSuccess(object sender, SellEventArgs e)
+        {
+            WriteToConsole("onSellSuccess: " + "Transaction: " + e.TransactionId + " Fiat: " + e.FiatAmount + " Bitcoin: " + e.BitcoinAmount);
+            WriteToConsole("Hardware Action: Dispenser -> Dispense " + e.FiatAmount);
+            WriteToConsole("Hardware Action: Printer -> Proof of Sale receipt");
+        }
+
+        /// <summary>
+        /// Bitcoin has been sent from a user's primary wallet account.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void onSendSuccess(object sender, SendEventArgs e)
+        {
+            WriteToConsole("onSendSuccess: " + "Transaction: " + e.TransactionId + " Bitcoin: " + e.BitcoinAmount);
+        }
+
+        /// <summary>
+        /// The Robocoin logo has been pressed from the home screen.  It can be set to expose administrative functionality after a couple mouse clicks (if necessary).
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void onSecretButtonTapped(object sender, EventArgs e)
+        {
+            WriteToConsole("onSecretButtonTapped");
+        }
+        #endregion
+
+        #region Commands
         private void goButton_Click(object sender, EventArgs e)
         {
             ConfigSettings configSettings = ConfigSettings.getInstance();
-            robocoinBrowser.Load(configSettings.WebHost, configSettings.ApiKey, configSettings.ApiSecret, configSettings.ApiHost, configSettings.MachineId);
+            // Loads the robocoin SDK 
+            robocoin.Load(new Uri(configSettings.WebHost), configSettings.ApiKey, configSettings.ApiSecret, configSettings.ApiHost, configSettings.MachineId);
         }
 
-        private void refreshButton_Click(object sender, EventArgs e)
-        {
-            robocoinBrowser.Refresh();
-        }
-
-        private void configButton_Click(object sender, EventArgs e)
-        {
-            Config config = new Config();
-            config.Show();
-        }
-
+        /// <summary>
+        /// Hardware action: The validator should reject notes if the total amount deposited exceeds the buy limit captures in onGotBuyLimit.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void insertMoneyMenuItem_Click(object sender, EventArgs e)
         {
-            Decimal denominationInserted = 5.00M;
-            Decimal newValue = _totalInserted + denominationInserted;
+            int denominationInserted = 1;
+            int newValue = _totalInserted + denominationInserted;
 
             if (newValue <= _buyLimit)
             {
                 _totalInserted += denominationInserted;
-                robocoinBrowser.OnBillInserted(denominationInserted);
+                // Increments the amount deposited on the screen
+                robocoin.OnBillInserted(denominationInserted);
             }
+
             else
             {
-                MessageBox.Show("Note rejected");
+                WriteToConsole("Hardware Action: Validator -> Reject");
             }
         }
 
         private void getKioskInfo_Click(object sender, EventArgs e)
         {
-            robocoinBrowser.GetKioskInfo();
+            // Fetches kiosk information
+            robocoin.GetKioskInfo();
         }
 
         private void postLog_Click(object sender, EventArgs e)
         {
-            Log log = new Log();
-            log.LogLevel = Log.Level.INFO;
-            log.Message = "This is a test message";
-            robocoinBrowser.PostLog(log);
+            // Sends a log to Robocoin
+            robocoin.PostLog(new Log(Level.Info, "Send test log to Robocoin"));
         }
 
         private void getInventory_Click(object sender, EventArgs e)
         {
-            robocoinBrowser.GetInventory();
+            // Fetches machine inventory information
+            robocoin.GetInventory();
         }
 
         private void postInventory_Click(object sender, EventArgs e)
         {
-            List<KioskCashCassette> kioskCashCasettes = new List<KioskCashCassette>();
+            // Example of performing an action to empty the bill validator
+            foreach (KioskCashCassette kioskCashCassette in _kioskCashCassettes)
+            {
+                if (kioskCashCassette.KioskCashCassetteType == Cassette.CashIn)
+                {
+                    kioskCashCassette.CurrentNotes = 0;
+                    kioskCashCassette.CurrentAmount = 0;
+                }
+            }
 
-            KioskCashCassette kioskCashCassette = new KioskCashCassette();
-            kioskCashCassette.Capacity = 2200;
-            kioskCashCassette.KioskCashCassetteId = "02c27c61-d9a9-41e5-b6d6-f38b6f61c9e3";
-            kioskCashCassette.Denomination = 20;
-            kioskCashCassette.CurrentNotes = 50;
-            kioskCashCassette.CurrentAmount = 1000;
-            kioskCashCassette.Position = 0;
-            kioskCashCassette.KioskCashDeviceId = "346b8f0f-dbdc-42b7-ab78-c6f27f0e87b0";
-            kioskCashCassette.KioskCashCassetteType = KioskCashCassette.Types.CASH_OUT;
-
-            kioskCashCasettes.Add(kioskCashCassette);
-
-            robocoinBrowser.PostInventory(kioskCashCasettes);
+            robocoin.PostInventory(_kioskCashCassettes);
         }
 
         private void getAuthedUser_Click(object sender, EventArgs e)
         {
-            robocoinBrowser.GetAuthUser();
+            // Manually fetches the authenticated user (if one is logged in)
+            robocoin.GetAuthenticatedUser();
         }
 
         private void getOperator_Click(object sender, EventArgs e)
         {
-            robocoinBrowser.GetOperator();
+            // Fetches operator information
+            robocoin.GetOperator();
+        }
+        #endregion
+
+        #region Misc UI
+        private void refreshButton_Click(object sender, EventArgs e)
+        {
+            robocoin.Refresh();
         }
 
-        private void onSellSuccess(string transactionId, int bitcoinAmount, int fiatAmount)
+        private void configButton_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Successful sell: transaction " + transactionId + " amount " + bitcoinAmount + " for " + fiatAmount);
+            new Config().Show();            
         }
 
-        private void onBuySuccess(string transactionId, int bitcoinAmount)
+        private void WriteToConsole(String text)
         {
-            _totalInserted = 0.00M;
-            MessageBox.Show("Successful buy: transaction " + transactionId + " amount " + bitcoinAmount);
+            Dispatcher.Invoke(DispatcherPriority.Normal, new ThreadStart(() =>
+            {
+                txtConsole.AppendText(text + "\n");
+                txtConsole.ScrollToEnd();
+            }));
         }
-
-        private void onGotBuyLimit(int buyLimit)
-        {
-            _buyLimit = Convert.ToDecimal(buyLimit);
-        }
-
-        private void onSendSuccess(string transactionId, int bitcoinAmount)
-        {
-            MessageBox.Show("Successful send: transaction " + transactionId + " for " + bitcoinAmount);
-        }
-
-        private void onAppRunning()
-        {
-            MessageBox.Show("App is running");
-        }
-
-        private void onPageChange(string page)
-        {
-            System.Console.WriteLine("page changed to " + page);
-        }
-
-        private void onGotKioskInfo(KioskInfo kioskInfo)
-        {
-            MessageBox.Show(kioskInfo.Kiosk.BankAccountGroupId);
-        }
-
-        private void onGotAuthUser(User user)
-        {
-            MessageBox.Show(user.Nickname);
-        }
-
-        private void onGotOperator(Operator theOperator)
-        {
-            MessageBox.Show(theOperator.Name);
-        }
-
-        private void onGotInventory(Inventory inventory)
-        {
-            MessageBox.Show(inventory.BuyAvailableAmount.ToString());
-        }
-
-        private void onSecretButtonTapped()
-        {
-            MessageBox.Show("Secret button tapped");
-        }
+        #endregion
     }
 }

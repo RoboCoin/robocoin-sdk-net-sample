@@ -37,7 +37,12 @@ namespace RobocoinEmbedded
             configSettings.ApiKey = ApiKeyText.Text;
             configSettings.ApiSecret = ApiSecretText.Text;
             configSettings.MachineId = MachineId.Text;
-            configSettings.WebHost = uri.Text;
+            configSettings.WebHost = uri.Text;           
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
         }
     }
 }
