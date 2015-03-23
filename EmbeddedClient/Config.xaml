@@ -18,21 +18,21 @@
             <ColumnDefinition MinWidth="50"/>
         </Grid.ColumnDefinitions>
 
-        <TextBlock Grid.Row="0" Grid.Column="0" Text="API Key:"/>
-        <TextBox Grid.Row="0" Grid.Column="1" x:Name="ApiKeyText"/>
+        <TextBlock Grid.Row="0" Grid.Column="0" Text="Machine ID:"/>
+        <TextBox Grid.Row="0" Grid.Column="1" x:Name="MachineId"/>
 
-        <TextBlock Grid.Row="1" Grid.Column="0" Text="API Secret:" />
-        <TextBox Grid.Row="1"  Grid.Column="1" x:Name="ApiSecretText"/>
+        <TextBlock Grid.Row="1" Grid.Column="0" Text="API Key:"/>
+        <TextBox Grid.Row="1" Grid.Column="1" x:Name="ApiKeyText"/>
 
-        <TextBlock Grid.Row="2" Grid.Column="0" Text="URL:"/>
-        <TextBox Grid.Row="2" Grid.Column="1" x:Name="uri"/>
+        <TextBlock Grid.Row="2" Grid.Column="0" Text="API Secret:" />
+        <TextBox Grid.Row="2"  Grid.Column="1" x:Name="ApiSecretText"/>
 
-        <TextBlock Grid.Row="3" Grid.Column="0" Text="API Host:"/>
-        <TextBox Grid.Row="3" Grid.Column="1" x:Name="ApiHost"/>
+        <TextBlock Grid.Row="3" Grid.Column="0" Text="URL:"/>
+        <TextBox Grid.Row="3" Grid.Column="1" x:Name="uri"/>
 
-        <TextBlock Grid.Row="4" Grid.Column="0" Text="Machine ID:"/>
-        <TextBox Grid.Row="4" Grid.Column="1" x:Name="MachineId"/>
+        <TextBlock Grid.Row="4" Grid.Column="0" Text="API Host:"/>
+        <TextBox Grid.Row="4" Grid.Column="1" x:Name="ApiHost"/>
+
         <Button Content="Save" Grid.Column="1" HorizontalAlignment="Left" Height="30" Margin="177,41,0,-40" Grid.Row="4" VerticalAlignment="Top" Width="75" RenderTransformOrigin="0.533,-0.8" Click="Button_Click"/>
-
     </Grid>
 </Window>

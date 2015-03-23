@@ -105,6 +105,15 @@
     <Content Include="icudtl.dat">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="cef.pak">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="cef_100_percent.pak">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="cef_200_percent.pak">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -158,7 +167,6 @@
     <Resource Include="Robocoin\Newtonsoft.Json.xml" />
     <Content Include="Robocoin\pdf.dll" />
     <Content Include="Robocoin\Robocoin.dll" />
-    <Content Include="Robocoin\Robocoin.pdb" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

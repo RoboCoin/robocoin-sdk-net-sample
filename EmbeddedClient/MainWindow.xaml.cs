@@ -107,7 +107,7 @@ namespace RobocoinEmbedded
         private void onGotInventory(object sender, InventoryEventArgs e)
         {
             _kioskCashCassettes = e.KioskCashCassettes;
-            WriteToConsole("onGotInventory: buy -> " + e.BuyAvailableAmount + " sell -> " + e.SellAvailableAmount);
+            WriteToConsole("onGotInventory: Buy -> " + e.BuyAvailableAmount + " Sell -> " + e.SellAvailableAmount);
         }
 
         /// <summary>
@@ -228,6 +228,7 @@ namespace RobocoinEmbedded
         {
             ConfigSettings configSettings = ConfigSettings.getInstance();
             // Loads the robocoin SDK 
+            WriteToConsole("Load(...)");
             robocoin.Load(new Uri(configSettings.WebHost), configSettings.ApiKey, configSettings.ApiSecret, configSettings.ApiHost, configSettings.MachineId);
         }
 
@@ -257,18 +258,21 @@ namespace RobocoinEmbedded
         private void getKioskInfo_Click(object sender, EventArgs e)
         {
             // Fetches kiosk information
+            WriteToConsole("GetKioskInfo()");
             robocoin.GetKioskInfo();
         }
 
         private void postLog_Click(object sender, EventArgs e)
         {
             // Sends a log to Robocoin
+            WriteToConsole("PostLog(Log)");
             robocoin.PostLog(new Log(Level.Info, "Send test log to Robocoin"));
         }
 
         private void getInventory_Click(object sender, EventArgs e)
         {
             // Fetches machine inventory information
+            WriteToConsole("GetInventory()");
             robocoin.GetInventory();
         }
 
@@ -284,18 +288,21 @@ namespace RobocoinEmbedded
                 }
             }
 
+            WriteToConsole("PostInventory(KioskCashCassette)");
             robocoin.PostInventory(_kioskCashCassettes);
         }
 
         private void getAuthedUser_Click(object sender, EventArgs e)
         {
             // Manually fetches the authenticated user (if one is logged in)
+            WriteToConsole("GetAuthenticatedUser()");
             robocoin.GetAuthenticatedUser();
         }
 
         private void getOperator_Click(object sender, EventArgs e)
         {
             // Fetches operator information
+            WriteToConsole("GetOperator()");
             robocoin.GetOperator();
         }
         #endregion
