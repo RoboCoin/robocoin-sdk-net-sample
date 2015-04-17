@@ -30,7 +30,7 @@ namespace RobocoinEmbedded
     public partial class MainWindow : Window
     {
         private Collection<KioskCashCassette> _kioskCashCassettes;
-        private int _buyLimit;
+        private int _depositLimit;
         private int _totalInserted;
 
         public MainWindow()
@@ -39,14 +39,18 @@ namespace RobocoinEmbedded
             robocoin.OnAppRunning += onAppRunning;
             robocoin.OnBuySuccess += onBuySuccess;
             robocoin.OnGotAuthenticatedUser += onGotAuthUser;
-            robocoin.OnGotBuyLimit += onGotBuyLimit;
+            robocoin.OnGotDepositLimit += onGotDepositLimit;
             robocoin.OnGotInventory += onGotInventory;
             robocoin.OnGotKioskInfo += onGotKioskInfo;
             robocoin.OnGotOperator += onGotOperator;
             robocoin.OnPageChange += onPageChange;
             robocoin.OnSellSuccess += onSellSuccess;
             robocoin.OnSendSuccess += onSendSuccess;
+            robocoin.OnSendMoneySuccess += onSendMoneySuccess;
+            robocoin.OnReceiveMoneySuccess +=onReceiveMoneySuccess;
             robocoin.OnSecretButtonTapped += onSecretButtonTapped;
+            robocoin.OnConsoleLog +=onConsoleLog;
+            robocoin.OnReloading +=onReloading;
         }
 
         #region Events
@@ -92,10 +96,10 @@ namespace RobocoinEmbedded
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void onGotBuyLimit(object sender, BuyLimitEventArgs e)
+        private void onGotDepositLimit(object sender, DepositLimitEventArgs e)
         {            
-            _buyLimit = e.BuyLimitAmount;
-            WriteToConsole("onGotBuyLimit: " + e.BuyLimitAmount);
+            _depositLimit = e.DepositLimitAmount;
+            WriteToConsole("onGotDepositLimit: " + e.DepositLimitAmount);
             WriteToConsole("Hardware Action: Validator -> Enable");
         }
 
@@ -184,6 +188,27 @@ namespace RobocoinEmbedded
                 case Screen.SignOut:
                     // The user signs out
                     break;
+                case Screen.EnrollmentTerms:
+                    // The user is enrolling for the first time and is looking at the terms and conditions
+                    break;
+                case Screen.Disabled:
+                    // The disabled screen
+                    break;
+                case Screen.SendMoneyRecipient:
+                    // The recipient phone number screen in send money
+                    break;
+                case Screen.SendMoneyDestination:
+                    // The location map selector in send money
+                    break;
+                case Screen.SendMoneyAmount:
+                    // The estimator screen for how much to send in send money
+                    break;
+                case Screen.SendMoneyAddCash:
+                    // The deposit screen in send money
+                    break;
+                case Screen.ReceiveMoney:
+                    // The withdrawal selection screen in receive money
+                    break;
             }
         }
 
@@ -213,6 +238,31 @@ namespace RobocoinEmbedded
         }
 
         /// <summary>
+        /// User has successfully completed a send money.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void onSendMoneySuccess(object sender, SendMoneyEventArgs e)
+        {
+            _totalInserted = 0;
+            WriteToConsole("onSendMoneySuccess: " + "Transaction: " + e.TransactionId);
+            WriteToConsole("Hardware Action: Validator -> Disable");
+            WriteToConsole("Hardware Action: Printer -> Proof of Send Money receipt");
+        }
+
+        /// <summary>
+        /// User has successfully redeemed a receive money.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void onReceiveMoneySuccess(object sender, ReceiveMoneyEventArgs e)
+        {
+            WriteToConsole("onReceiveMoneySuccess: " + "Transaction: " + e.TransactionId);
+            WriteToConsole("Hardware Action: Dispenser -> Dispense " + e.FiatAmount);
+            WriteToConsole("Hardware Action: Printer -> Proof of Receive Money receipt");
+        }
+
+        /// <summary>
         /// The Robocoin logo has been pressed from the home screen.  It can be set to expose administrative functionality after a couple mouse clicks (if necessary).
         /// </summary>
         /// <param name="sender"></param>
@@ -220,6 +270,26 @@ namespace RobocoinEmbedded
         private void onSecretButtonTapped(object sender, EventArgs e)
         {
             WriteToConsole("onSecretButtonTapped");
+        }
+
+        /// <summary>
+        /// The console logs from the javascript application
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void onConsoleLog(object sender, ConsoleLogEventArgs e)
+        {
+            WriteToConsole("onConsoleLog");
+        }
+
+        /// <summary>
+        /// The applcation has begun refreshing itself
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void onReloading(object sender, EventArgs e)
+        {
+            WriteToConsole("onReloading");
         }
         #endregion
 
@@ -242,7 +312,7 @@ namespace RobocoinEmbedded
             int denominationInserted = 1;
             int newValue = _totalInserted + denominationInserted;
 
-            if (newValue <= _buyLimit)
+            if (newValue <= _depositLimit)
             {
                 _totalInserted += denominationInserted;
                 // Increments the amount deposited on the screen
