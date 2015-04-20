@@ -26,8 +26,8 @@ namespace RobocoinEmbedded
 
         private ConfigSettings()
         {
-            this._webHost = "https://embed.robocoin.com/v0";
-            this._apiHost = "https://api.robocoin.com";
+            this._webHost = "https://app.romit.io/v0";
+            this._apiHost = "https://api.romit.io";
         }
 
         public string ApiKey
