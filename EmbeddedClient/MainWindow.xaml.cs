@@ -39,7 +39,7 @@ namespace RobocoinEmbedded
             robocoin.OnAppRunning += onAppRunning;
             robocoin.OnBuySuccess += onBuySuccess;
             robocoin.OnGotAuthenticatedUser += onGotAuthUser;
-            robocoin.OnGotBuyLimit += onGotBuyLimit;
+            robocoin.OnGotDepositLimit += onGotDepositLimit;
             robocoin.OnGotInventory += onGotInventory;
             robocoin.OnGotKioskInfo += onGotKioskInfo;
             robocoin.OnGotOperator += onGotOperator;
@@ -47,6 +47,9 @@ namespace RobocoinEmbedded
             robocoin.OnSellSuccess += onSellSuccess;
             robocoin.OnSendSuccess += onSendSuccess;
             robocoin.OnSecretButtonTapped += onSecretButtonTapped;
+            robocoin.OnSendMoneySuccess += onSendMoneySuccess;
+            robocoin.OnReceiveMoneySuccess += onReceiveMoneySuccess;
+            robocoin.OnConsoleLog += onConsoleLog;
         }
 
         #region Events
@@ -71,7 +74,7 @@ namespace RobocoinEmbedded
         private void onBuySuccess(object sender, BuyEventArgs e)
         {
             _totalInserted = 0;
-            WriteToConsole("onBuySuccess: " + "Transaction: " + e.TransactionId + " Bitcoin: " + e.BitcoinAmount);
+            WriteToConsole("onBuySuccess: " + "Transaction: " + e.TransactionId + " Bitcoin: " + e.BitcoinAmount + " Fiat: " + e.FiatAmount);
             WriteToConsole("Hardware Action: Validator -> Disable");
             WriteToConsole("Hardware Action: Printer -> Proof of Purchase receipt");
         }
@@ -92,10 +95,10 @@ namespace RobocoinEmbedded
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void onGotBuyLimit(object sender, BuyLimitEventArgs e)
+        private void onGotDepositLimit(object sender, DepositLimitEventArgs e)
         {            
-            _buyLimit = e.BuyLimitAmount;
-            WriteToConsole("onGotBuyLimit: " + e.BuyLimitAmount);
+            _buyLimit = e.DepositLimitAmount;
+            WriteToConsole("onGotBuyLimit: " + e.DepositLimitAmount);
             WriteToConsole("Hardware Action: Validator -> Enable");
         }
 
@@ -209,7 +212,39 @@ namespace RobocoinEmbedded
         /// <param name="e"></param>
         void onSendSuccess(object sender, SendEventArgs e)
         {
-            WriteToConsole("onSendSuccess: " + "Transaction: " + e.TransactionId + " Bitcoin: " + e.BitcoinAmount);
+            WriteToConsole("onSendSuccess: " + "Transaction: " + e.TransactionId + " Bitcoin: " + e.BitcoinAmount + " Destination: " + e.Destination);
+        }
+
+        /// <summary>
+        /// The user has successfully sent money
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void onSendMoneySuccess(object sender, SendMoneyEventArgs e)
+        {
+            WriteToConsole("onSendMoneySuccess: " + "Transaction: " + e.TransactionId + " Bitcoin change: " + e.BitcoinChangeAmount + " Source Fiat:" + e.SourceFiatAmount +
+                " Destination Phone: " + e.DestinationPhone + " Destination Fiat Type: " + e.DestinationFiatType + " Destination Fiat Amount: " + 
+                e.DestinationFiatAmount);
+        }
+
+        /// <summary>
+        /// The user has successfully received money
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void onReceiveMoneySuccess(object sender, ReceiveMoneyEventArgs e)
+        {
+            WriteToConsole("onReceiveMoneySuccess: " + "Currency type: " + e.FiatType + " Currency Amount: " + e.FiatAmount + " Transaction ID: " + e.TransactionId);
+        }
+
+        /// <summary>
+        /// Write to the console log
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void onConsoleLog(object sender, ConsoleLogEventArgs e)
+        {
+            WriteToConsole("onConsoleLog: " + e.Message);
         }
 
         /// <summary>
@@ -230,6 +265,7 @@ namespace RobocoinEmbedded
             // Loads the robocoin SDK 
             WriteToConsole("Load(...)");
             robocoin.Load(new Uri(configSettings.WebHost), configSettings.ApiKey, configSettings.ApiSecret, configSettings.ApiHost, configSettings.MachineId);
+            _totalInserted = 0;
         }
 
         /// <summary>
@@ -245,14 +281,15 @@ namespace RobocoinEmbedded
             if (newValue <= _buyLimit)
             {
                 _totalInserted += denominationInserted;
-                // Increments the amount deposited on the screen
-                robocoin.OnBillInserted(denominationInserted);
             }
 
             else
             {
                 WriteToConsole("Hardware Action: Validator -> Reject");
             }
+
+            // Increments the amount deposited on the screen
+            robocoin.OnBillInserted(denominationInserted);
         }
 
         private void getKioskInfo_Click(object sender, EventArgs e)
@@ -311,6 +348,7 @@ namespace RobocoinEmbedded
         private void refreshButton_Click(object sender, EventArgs e)
         {
             robocoin.Refresh();
+            _totalInserted = 0;
         }
 
         private void configButton_Click(object sender, EventArgs e)
