@@ -46,17 +46,11 @@ namespace RobocoinEmbedded
             robocoin.OnPageChange += onPageChange;
             robocoin.OnSellSuccess += onSellSuccess;
             robocoin.OnSendSuccess += onSendSuccess;
-            robocoin.OnSendMoneySuccess += onSendMoneySuccess;
-            robocoin.OnReceiveMoneySuccess +=onReceiveMoneySuccess;
             robocoin.OnSecretButtonTapped += onSecretButtonTapped;
-<<<<<<< HEAD
             robocoin.OnSendMoneySuccess += onSendMoneySuccess;
             robocoin.OnReceiveMoneySuccess += onReceiveMoneySuccess;
             robocoin.OnConsoleLog += onConsoleLog;
-=======
-            robocoin.OnConsoleLog +=onConsoleLog;
             robocoin.OnReloading +=onReloading;
->>>>>>> dc71b15368e21534819b8ed3163f2c1ff4ce4225
         }
 
         #region Events
@@ -104,13 +98,8 @@ namespace RobocoinEmbedded
         /// <param name="e"></param>
         private void onGotDepositLimit(object sender, DepositLimitEventArgs e)
         {            
-<<<<<<< HEAD
-            _buyLimit = e.DepositLimitAmount;
-            WriteToConsole("onGotBuyLimit: " + e.DepositLimitAmount);
-=======
             _depositLimit = e.DepositLimitAmount;
             WriteToConsole("onGotDepositLimit: " + e.DepositLimitAmount);
->>>>>>> dc71b15368e21534819b8ed3163f2c1ff4ce4225
             WriteToConsole("Hardware Action: Validator -> Enable");
         }
 
@@ -246,38 +235,6 @@ namespace RobocoinEmbedded
         void onSendSuccess(object sender, SendEventArgs e)
         {
             WriteToConsole("onSendSuccess: " + "Transaction: " + e.TransactionId + " Bitcoin: " + e.BitcoinAmount + " Destination: " + e.Destination);
-        }
-
-        /// <summary>
-        /// The user has successfully sent money
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        void onSendMoneySuccess(object sender, SendMoneyEventArgs e)
-        {
-            WriteToConsole("onSendMoneySuccess: " + "Transaction: " + e.TransactionId + " Bitcoin change: " + e.BitcoinChangeAmount + " Source Fiat:" + e.SourceFiatAmount +
-                " Destination Phone: " + e.DestinationPhone + " Destination Fiat Type: " + e.DestinationFiatType + " Destination Fiat Amount: " + 
-                e.DestinationFiatAmount);
-        }
-
-        /// <summary>
-        /// The user has successfully received money
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        void onReceiveMoneySuccess(object sender, ReceiveMoneyEventArgs e)
-        {
-            WriteToConsole("onReceiveMoneySuccess: " + "Currency type: " + e.FiatType + " Currency Amount: " + e.FiatAmount + " Transaction ID: " + e.TransactionId);
-        }
-
-        /// <summary>
-        /// Write to the console log
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        void onConsoleLog(object sender, ConsoleLogEventArgs e)
-        {
-            WriteToConsole("onConsoleLog: " + e.Message);
         }
 
         /// <summary>
