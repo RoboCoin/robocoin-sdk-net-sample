@@ -20,12 +20,12 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG; </DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <PlatformTarget>x86</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -37,7 +37,8 @@
     <Reference Include="Accessibility" />
     <Reference Include="PresentationUI, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="ReachFramework" />
-    <Reference Include="Robocoin">
+    <Reference Include="Robocoin, Version=0.0.0.1, Culture=neutral, PublicKeyToken=5fe4090a8cd7a40a, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>Robocoin\Robocoin.dll</HintPath>
     </Reference>
     <Reference Include="System" />
@@ -125,7 +126,6 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
     <Content Include="CefSharp.BrowserSubprocess.Core.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -151,6 +151,12 @@
     <Content Include="msvcr110.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Newtonsoft.Json.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Resource Include="Newtonsoft.Json.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
     <Content Include="Robocoin\CefSharp.BrowserSubprocess.Core.dll" />
     <Content Include="Robocoin\CefSharp.BrowserSubprocess.exe" />
     <Content Include="Robocoin\CefSharp.Core.dll" />
@@ -163,8 +169,12 @@
     <Content Include="Robocoin\libcef.dll" />
     <Content Include="Robocoin\libEGL.dll" />
     <Content Include="Robocoin\libGLESv2.dll" />
-    <Content Include="Robocoin\Newtonsoft.Json.dll" />
-    <Resource Include="Robocoin\Newtonsoft.Json.xml" />
+    <Content Include="Robocoin\Newtonsoft.Json.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Resource Include="Robocoin\Newtonsoft.Json.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
     <Content Include="Robocoin\pdf.dll" />
     <Content Include="Robocoin\Robocoin.dll" />
   </ItemGroup>
