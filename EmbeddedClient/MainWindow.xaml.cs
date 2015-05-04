@@ -239,6 +239,8 @@ namespace RobocoinEmbedded
 
         /// <summary>
         /// User has successfully completed a send money.
+        /// Software action: Update machine inventory by calling PostInventory()
+        /// Hardware action: Print a proof of sent money receipt that includes the transaction ID, the amount of source fiat, the amount of destination fiat, and the change amount.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -252,6 +254,9 @@ namespace RobocoinEmbedded
 
         /// <summary>
         /// User has successfully redeemed a receive money.
+        /// Software action: Update machine inventory by calling PostInventory()
+        /// Hardware action: Dispense the given amount of cash.
+        /// Hardware action: Print a proof of receive money receipt that includes the transaction ID, and the amount of fiat.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
